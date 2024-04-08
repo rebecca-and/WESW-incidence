@@ -1,0 +1,17 @@
+iso3 - country ISO3 code
+analysis_age - age group of WESW (used to match to incidence for total population women of the same age)
+area_id - Area ID used to match WESW incidence to incidence in total population women from the same district. IDs are from Naomi model areas.
+area - Area name (corresponds to area_id)
+year - Year of incidence estimate (used for matching to total population incidence_
+slab - reference label used for forest plot
+new_infections - Number of new HIV infections occurring in WESW as recorded by the study (for Thirumurthy 2021, where no new infections were observed, a continuity correction of 0.5 was applied to permit inclusion in analysis)
+total_py - Total number of person years observed in study.
+incidence_kp - Study estimate of incidence among WESW
+control_incid - Where incidence for a non-WESW comparator group was offered, this was used as the total population women incidence value to calculate IRR
+ref - Study reference
+infections - number of new infections occurring in age-area-year-matched total population women
+nat_infections - number of new infections occurring in age-country-year matched total population women
+incidence - Incidence amongst age-area-year-matched women
+nat_incidence - Incidence amongst age-country-year-matched women
+IRR - incidence_kp/incidence
+nat_IRR - incidence_kp/nat_infections
