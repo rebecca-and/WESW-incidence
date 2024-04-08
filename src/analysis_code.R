@@ -9,9 +9,9 @@ region <- moz.utils::region()
 ######################################################################
 ### Contents:
 ### Line 12 -Formatting and Meta-analyis (presented in forest plots in figures 1, S1, S2)
-### Line 353 - Median IRRs
-### Line 371 - Log-Linear Model (SSA, Kenya, ZWE)
-### Line 583- Figure 2 Plots (Gives reported correlation between WESW and total population incidence)
+### Line 356 - Median IRRs
+### Line 374 - Log-Linear Model (SSA, Kenya, ZWE)
+### Line 586- Figure 2 Plots (Gives reported correlation between WESW and total population incidence)
 ######################################################################
 
 
@@ -120,22 +120,22 @@ esa.fswmodelI2 <- round((100 * sum(esa.fswmodel$sigma2) / (sum(esa.fswmodel$sigm
 
 ### Generate plot
 
-png("figures/Fig 1 Forest.png", width = 600, height = 1000)
-
+# png("figures/Fig 1 Forest.png", width = 600, height = 1000)
+pdf("figures/Fig 1 Forest.pdf")
 forest.rma(fsw.model,
            showweights = F,
            xlim = c(-15,15),
            ylim = c(-3,92),
            atransf = exp,
            header = "Year | Country | Ref",
-           cex = 0.75,
+           cex = 0.35,
            rows=c(3:20, 24:88),
            mlab = paste0("SSA regional estimate   I^2 =", fsw.modelI2, "%"),
-           plotwidth=unit(30,"cm"),
+           # plotwidth=unit(30,"cm"),
            xlab="Incidence Rate Ratio",
            order= -order(study_data$idx))
 
-op <- par(cex=0.8, font=2)
+op <- par(cex=0.5, font=2)
 par(font=4)
 text(-15, c(89,21), pos=4, c("Eastern and Southern Africa (ESA)",
                              "Western and Central Africa (WCA)"
@@ -156,7 +156,8 @@ dev.off()
 ########################################################################################
 
 quality <- study_data %>%
-  filter(!ref %in% c("Priddy et al", "Van Damme et al", "Laga et al", "Kilburn et al", "Fowke et al", "Kerrigan et al"))
+  # filter(!ref %in% c("Priddy et al", "Van Damme et al", "Laga et al", "Kilburn et al", "Fowke et al", "Kerrigan et al"))
+  filter(!ref %in% c("Faini et al", "Forbi et al",  "Malama et al" , "McKinnon et al" ,"Nagot et al" ,"Nouaman et al",  "Priddy et al", "Van Damme et al", "Laga et al", "Kilburn et al", "Fowke et al", "Kerrigan et al"))
 
 
 
@@ -220,15 +221,16 @@ qual_esa.fswmodelI2 <- round((100 * sum(qual_esa.fswmodel$sigma2) / (sum(qual_es
 ### Generate plot
 
 png("figures/Supp Fig S1 Forest.png", width = 600, height = 1000)
-
+# pdf("figures/Supp Fig S1 Forest.pdf")
 forest.rma(qual_fsw.model,
            showweights = F,
            xlim = c(-15,15),
-           ylim = c(-3,83.5),
+           ylim = c(-3,75),
            atransf = exp,
            header = "Year | Country | Ref",
            cex = 0.75,
-           rows=c(3:18, 22:80),
+           # cex = 0.35,
+           rows=c(3:14, 18:71),
            mlab = paste0("SSA regional estimate   I^2 =", qual_fsw.modelI2, "%"),
            plotwidth=unit(30,"cm"),
            xlab="Incidence Rate Ratio",
@@ -236,13 +238,13 @@ forest.rma(qual_fsw.model,
 
 op <- par(cex=0.8, font=2)
 par(font=4)
-text(-15, c(81,19), pos=4, c("Eastern and Southern Africa (ESA)",
+text(-15, c(72,15), pos=4, c("Eastern and Southern Africa (ESA)",
                              "Western and Central Africa (WCA)"
 ))
 par(op)
 
 
-addpoly(qual_esa.fswmodel, row=20.5, atransf = exp, mlab = paste0("ESA regional estimate   I^2 =", qual_esa.fswmodelI2, "%"))
+addpoly(qual_esa.fswmodel, row=16.5, atransf = exp, mlab = paste0("ESA regional estimate   I^2 =", qual_esa.fswmodelI2, "%"))
 
 addpoly(qual_wca.fswmodel, row=1.5, atransf = exp, mlab = paste0("WCA regional estimate   I^2 =", qual_wca.fswmodelI2, "%"))
 
@@ -322,22 +324,22 @@ P <- W - W %*% X %*% solve(t(X) %*% W %*% X) %*% t(X) %*% W
 
 nat_esa.fswmodelI2 <- round((100 * sum(nat_esa.fswmodel$sigma2) / (sum(nat_esa.fswmodel$sigma2) + (nat_esa.fswmodel$k-nat_esa.fswmodel$p)/sum(diag(P)))), 1)
 
-png("figures/Supp Fig S2 Forest.png", width = 600, height = 1000)
-
+# png("figures/Supp Fig S2 Forest.png", width = 600, height = 1000)
+pdf("figures/Supp Fig S2 Forest.pdf")
 forest.rma(nat_fsw.model,
            showweights = F,
            xlim = c(-15,15),
            ylim = c(-3,92),
            atransf = exp,
            header = "Year | Country | Ref",
-           cex = 0.75,
+           cex = 0.35,
            rows=c(3:20, 24:88),
            mlab = paste0("SSA regional estimate   I^2 =", fsw.modelI2, "%"),
            plotwidth=unit(30,"cm"),
            xlab="Incidence Rate Ratio",
            order= -order(nat_study_data$idx))
 
-op <- par(cex=0.8, font=2)
+op <- par(cex=0.5, font=2)
 par(font=4)
 text(-15, c(89,21), pos=4, c("Eastern and Southern Africa (ESA)",
                              "Western and Central Africa (WCA)"
@@ -451,8 +453,8 @@ dat <- ident %>%
   )
 
 png("figures/Fig 4 IRR over time.png", width = 800, height = 400)
-
-dat %>%
+pdf("figures/Fig 4 IRR over time.pdf", height = 5, width = 10)
+(dat %>%
   moz.utils::name_region() %>%
   filter(type == "timeseries") %>%
   ggplot(aes(x = year, y = exp(median))) +
@@ -471,7 +473,7 @@ dat %>%
   theme(aspect.ratio = 1) +
   guides(colour = guide_legend(override.aes = list(size=5))) +  # Increase dot size in legend
   theme(legend.text = element_text(size = 11))+
-  theme(legend.title = element_text(size = 12, face = "bold"))
+  theme(legend.title = element_text(size = 12, face = "bold")))
 
 dev.off()
 
@@ -639,7 +641,7 @@ natural_incid_time <- study_data %>%
 incidplots <-  ggpubr::ggarrange(genpop_fsw_incid, natural_incid_time, nrow = 1, common.legend = T, legend = "bottom")
 
 png("figures/Fig 3 IRR plots 2703.png", width = 800, height = 400)
-
+pdf("figures/Fig 3 IRR plots 2703.pdf", width = 10, height = 5)
 incidplots
 
 dev.off()
