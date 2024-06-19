@@ -132,7 +132,9 @@ forest.rma(fsw.model,
            rows=c(3:20, 24:88),
            mlab = paste0("SSA regional estimate   I^2 =", fsw.modelI2, "%"),
            # plotwidth=unit(30,"cm"),
-           xlab="Incidence Rate Ratio",
+           xlab="Incidence Rate Ratio (Log Scale)",
+           # steps = 11,
+           # at = 10^(-2:4),
            order= -order(study_data$idx))
 
 op <- par(cex=0.5, font=2)
@@ -385,12 +387,18 @@ inla_data <- read_csv("inputs/inla_data.csv")
 
 # Full model SSA
 ssa_dat <- inla_data %>%
-  filter(type == "timeseries" | is.na(type))
+  filter(type == "timeseries" | is.na(type)) %>%
+  mutate(centre_year2 = centre_year/5)
 
 
 ref.iid.prec.prior <- list(prec = list(prior = "normal", param = c(1.6,2)))
 
+# IRR by single Years
 formula <- new_infections ~ f(id.ref, model = "iid", hyper = ref.iid.prec.prior) + centre_year + f(id.ref2, centre_year, model = "iid", hyper = ref.iid.prec.prior)
+
+# IRR by 5-year periods
+formula <- new_infections ~ f(id.ref, model = "iid", hyper = ref.iid.prec.prior) + centre_year2 + f(id.ref2, centre_year2, model = "iid", hyper = ref.iid.prec.prior)
+
 
 inla_mod <- INLA::inla(formula,
                         data = ssa_dat,
@@ -416,7 +424,7 @@ modelsummary2 <- round(modelsummary2, digits = 3) %>%
          Covariate = rowname) %>%
   select(Covariate, Mean, `95% CI`) %>%
   mutate(Covariate = case_when(Covariate == "(Intercept)" ~ "Intercept (Year = 2003)",
-                               Covariate == "centre_year" ~ "Year",
+                               Covariate == "centre_year" ~ "Year", #change to centre_year2 when model is IRR by 5yr periods
                                Covariate == "Precision for id.ref" ~ "Study Random Intercepts",
                                Covariate == "Precision for id.ref2" ~ "Study Random Slopes with respect to year"
   ))
